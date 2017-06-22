@@ -16,15 +16,15 @@ public class Heap_max_str {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        heap_max test = new heap_max();
-        test.insert_heap_max(1);
-        test.insert_heap_max(2);
-        test.insert_heap_max(3);
-        test.insert_heap_max(4);
-        test.insert_heap_max(5);
-        test.insert_heap_max(6);
-        test.insert_heap_max(7);
-        test.erase_heap(7);
-        test.BFS(test.root);
+        heap_max monticulo_max = new heap_max();
+//        monticulo_max.reader();
+//        for (int i = 0; i < monticulo_max.keys_add.length; i++) {
+//            monticulo_max.insert_heap_max(monticulo_max.keys_add[i]);
+//        }
+//        for (int i = 0; i < monticulo_max.keys_remove.length; i++) {
+//            monticulo_max.insert_heap_max(monticulo_max.keys_remove[i]);
+//        }
+//        monticulo_max.writer();
     }
 }
+
