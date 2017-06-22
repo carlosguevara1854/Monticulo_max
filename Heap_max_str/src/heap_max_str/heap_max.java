@@ -18,7 +18,7 @@ import java.util.Queue;
  *
  * @author F.R.G
  */
-public class heap_max {
+public class heap_max implements heap_max_i{
 
     //Arrays donde se almancenan las llaves a agregar y a eliminar.
     public int[] keys_add, keys_remove;
@@ -32,6 +32,7 @@ public class heap_max {
      * @param key Llave o campo clave del nodo que se va a crear.
      * @since v.1 22/06/2017
      */
+    @Override
     public void insert_heap_max(int key) {
         root = insert_heap_max(root, key);
     }
@@ -43,11 +44,14 @@ public class heap_max {
      * @param key Llave o campo del nodo que sera eliminado.
      * @since v.1 22/06/2017
      */
+    @Override
     public void erase_heap(int key) {
         //Se agrega esta condicion porque el metodo que pre-busqueda
-        //(erase_heap(node p_tree, int key, boolean enc)) del nodo no lo cubre.
+        //(erase_heap(node p_tree, int key, boolean enc)) del nodo no lo cubre
+        //cuando la raiz contiene la lleva a eliminar.
         if (root.getKey_value() == key) {
             root = erase_heap(root);
+            check(root, null);
         } else {
             erase_heap(root, key, false);
         }
@@ -56,12 +60,13 @@ public class heap_max {
     /**
      * Metodo de recorrido en amplitud.(BFS)
      *
-     * @param p_tree nodo raiz, tambien se puede realizar recorrido en amplitud
+     * @param p_tree Nodo raiz, tambien se puede realizar recorrido en amplitud
      * de nodos padres.
      * @return 1: El nodo pasaso es nulo, no se relizo el recorrido, 0:
      * recorrido hecho normalmente.
      * @since v.1 22/06/2017
      */
+    @Override
     public int BFS(node p_tree) {
         if (p_tree == null) {
             return 1;
@@ -183,7 +188,7 @@ public class heap_max {
 
     /**
      * Metodo se insercion en monticulo binario maximo. Realiza la insercion
-     * recursiva hasta encontrar una posicion vacia.
+     * recursiva hasta encontrar una posicion vacia (donde debe ser colocado).
      *
      * @param p_tree Raiz del arbol.
      * @param key LLave del nodo que sera creado.
@@ -198,7 +203,7 @@ public class heap_max {
             return new_node;
         }
         //Si la diferencia nodos es igual a cero(0), hace una llamada del metodo
-        //por la izquierda, si es igual a 1 hace una llamada del metodo por la
+        //por la izquierda, si es igual a uno(1) hace una llamada del metodo por la
         //derecha. De esta manera se van llenando el mismo nivel del arbol en forma
         //izquierda-derecha. Resultando de esta manera un arbol lleno/semi-lleno.
         //
@@ -278,7 +283,7 @@ public class heap_max {
         return find_max(p_tree.getP_rigth());
     }
 
-    /** Metodo que modela la nueva rama tras el nodo mas a la derecha.
+    /** Metodo que modela la nueva rama tras el nodo mas profundo.
      * Ejemplo:
      * p_max_node: 2
      * p_tree:
@@ -307,6 +312,7 @@ public class heap_max {
      * Metodo de lectura del archivo de texto (.txt) de entrada.
      *
      */
+    @Override
     public void reader() {
         try {
             File f = new File("monticulo_in.txt");
@@ -343,6 +349,7 @@ public class heap_max {
     /**
      *Metodo de escritura del archivo de texto (.txt) de salida.
      */
+    @Override
     public void writer() {
         try {
             File f = new File("monticulo_out.txt");
@@ -362,5 +369,6 @@ public class heap_max {
             System.out.println(e);
         }
     }
+
 }
 
