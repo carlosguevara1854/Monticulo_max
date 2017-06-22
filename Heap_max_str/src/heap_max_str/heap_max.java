@@ -30,7 +30,6 @@ public class heap_max {
     public void erase_heap(int key) {
         if (root.getKey_value() == key) {
             root = erase_heap(root);
-            check(root, null);
         } else {
             erase_heap(root, key, false);
         }
@@ -139,13 +138,6 @@ public class heap_max {
         prev.setKey_value(temp);
     }
 
-    /**
-     * Buscar el nodo máximo.
-     *
-     * @param p_tree Nodo raíz.
-     * @return El valor más alto del arbol binario.
-     * @since v.1 03/06/2017
-     */
     private node find_max(node p_tree) {
         if (p_tree == null) {
             return null;
@@ -156,14 +148,6 @@ public class heap_max {
         return find_max(p_tree.getP_rigth());
     }
 
-    /**
-     * Eliminar valor correcto.
-     *
-     * @param p_tree Nodo raíz.
-     * @param p_max_node Nodo que contiene el valor max.
-     * @return cambios es en nodo.
-     * @since v.1 03/06/2017
-     */
     private node remove_max_node(node p_tree, node p_max_node) {
         if (p_tree == null) {
             return null;
