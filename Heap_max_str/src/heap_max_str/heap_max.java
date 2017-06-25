@@ -18,7 +18,7 @@ import java.util.Queue;
  *
  * @author F.R.G
  */
-public class heap_max implements heap_max_i{
+public class heap_max implements heap_max_i {
 
     //Arrays donde se almancenan las llaves a agregar y a eliminar.
     public int[] keys_add, keys_remove;
@@ -46,45 +46,15 @@ public class heap_max implements heap_max_i{
      */
     @Override
     public void erase_heap(int key) {
-        //Se agrega esta condicion porque el metodo que pre-busqueda
-        //(erase_heap(node p_tree, int key, boolean enc)) del nodo no lo cubre
-        //cuando la raiz contiene la lleva a eliminar.
-        if (root.getKey_value() == key) {
-            root = erase_heap(root);
-            check(root, null);
-        } else {
-            erase_heap(root, key, false);
-        }
+        erase_heap(root, key);
     }
-
+    
     /**
-     * Metodo de recorrido en amplitud.(BFS)
-     *
-     * @param p_tree Nodo raiz, tambien se puede realizar recorrido en amplitud
-     * de nodos padres.
-     * @return 1: El nodo pasaso es nulo, no se relizo el recorrido, 0:
-     * recorrido hecho normalmente.
-     * @since v.1 22/06/2017
+     * Grabar arbol en forma de diagrama en el archivo(.txt) de salida.
      */
     @Override
-    public int BFS(node p_tree) {
-        if (p_tree == null) {
-            return 1;
-        }
-        Queue<node> queue_level = new LinkedList<>();
-        queue_level.clear();
-        queue_level.add(p_tree);
-        while (!(queue_level.isEmpty())) {
-            node temp = queue_level.remove();
-            System.out.print(temp.getKey_value() + " ");
-            if (temp.getP_left() != null) {
-                queue_level.add(temp.getP_left());
-            }
-            if (temp.getP_rigth() != null) {
-                queue_level.add(temp.getP_rigth());
-            }
-        }
-        return 0;
+    public void writer(){
+        printlevel(root);
     }
 
     /**
@@ -101,63 +71,58 @@ public class heap_max implements heap_max_i{
         //de (p_tree).
         if (p_tree.getP_left() == null) {
             node p_right_subtree = p_tree.getP_rigth();
-            //Antes de retornar la rama(u hoja) se verifica que esta cumpla la
-            // propiedad de monticulo maximo.
-            check(p_right_subtree, null);
             return p_right_subtree;
         }
         if (p_tree.getP_rigth() == null) {
             node p_left_subtree = p_tree.getP_left();
-            check(p_left_subtree, null);
             return p_left_subtree;
         }
         //En dicho caso que se llegue hasta este punto quiere decir que tanto
         //tiene hijos tanto derecho como izquierdo.
         //A (p_max_node) Se le asigna el nodo mas a la derecha del sub-arbol izquierdo.
         node p_max_node = find_max(p_tree.getP_left());
-        //Se va modelando la nueva rama a partir del nodo mas a la derecha del
-        //subarbol izquierdo.
+        //Se va modelando la nueva rama a partir del nodo mas profundo.
         p_max_node.setP_left(remove_max_node(p_tree.getP_left(), p_max_node));
         //A el hijo derecho (p_max_node) se le asigna la rama derecha del nodo que
         //contiene la llave de eliminacion(p_tree).
         p_max_node.setP_rigth(p_tree.getP_rigth());
-        //A partir de esta rama (p_max_node) se verifica si cumple la propiedad
-        //de monticulo maximo.
-        check(p_max_node, null);
         return p_max_node;
     }
 
     /**
      * Metodo que realiza la pre-busqueda del nodo que sera eliminado. Realiza
-     * la busqueda en forma preorden, posicionandode en el padre del nodo
+     * la busqueda en forma preorden, posicionandose en el padre del nodo
      * buscado.(es decir una posicion anterior)
      *
      * @see erase_heap_max(node p_tree)
      * @param p_tree Raiz del arbol
      * @param key Lllave o clave buscada para eliminar.
-     * @param enc Indicador si fue encontrado o no.(en su llamada es falso)
      */
-    private void erase_heap(node p_tree, int key, boolean enc) {
-        //Se realiza las llamadas del metodo mientras que el nodo paraso sea
-        //diferente de nulo y no encontrado(enc sea igual a falso)
-        if ((p_tree != null) && (enc != true)) {
+    private void erase_heap(node p_tree, int key) {
+        //Se realiza las llamadas del metodo mientras que el nodo pasado sea
+        //diferente de nulo.
+        //Primero se verifica que el nodo raiz del arbol sea el buscado.
+        if (p_tree != null) {
+            if (root.getKey_value() == key) {
+                root = erase_heap(root);
+            }
             if (p_tree.getP_left() != null) {
                 if (p_tree.getP_left().getKey_value() == key) {
                     //Una vez encontrado se modifica dicho rama/hoja.
                     p_tree.setP_left(erase_heap(p_tree.getP_left()));
-                    //Se le agrega a la variable verdadero, indicandole que deje
-                    //de buscar.
-                    enc = true;
                 }
             }
             if (p_tree.getP_rigth() != null) {
                 if (p_tree.getP_rigth().getKey_value() == key) {
                     p_tree.setP_rigth(erase_heap(p_tree.getP_rigth()));
-                    enc = true;
                 }
             }
-            erase_heap(p_tree.getP_left(), key, enc);
-            erase_heap(p_tree.getP_rigth(), key, enc);
+            //Tras la verificion anterior el arbol puede perder la propiedad del
+            //monticulo, por tal razon luego de tal posible eliminacion se llama
+            //al metodo que chequea la propiedad monticulo maximo(heap max).
+            check(root, null);
+            erase_heap(p_tree.getP_left(), key);
+            erase_heap(p_tree.getP_rigth(), key);
         }
     }
 
@@ -283,7 +248,7 @@ public class heap_max implements heap_max_i{
         return find_max(p_tree.getP_rigth());
     }
 
-    /** Metodo que modela la nueva rama tras el nodo mas profundo.
+    /** Metodo que modela la nueva rama a partir del nodo mas profundo.
      * Ejemplo:
      * p_max_node: 2
      * p_tree:
@@ -347,10 +312,28 @@ public class heap_max implements heap_max_i{
     }
 
     /**
-     *Metodo de escritura del archivo de texto (.txt) de salida.
+     * Metodo que recorre por nivel el arbol.
+     *
+     * @param p_tree Nodo raiz del arbol.
      */
-    @Override
-    public void writer() {
+    private void printlevel(node p_tree) {
+        if (root == null) {
+            return;
+        }
+        Queue<node> queue_level = new LinkedList<>();
+        queue_level.add(root);
+        while (!queue_level.isEmpty()) {
+            handleLevel(queue_level);
+        }
+    }
+
+    /**
+     * Escribir dentro del archivo de texto (.txt) de salida.
+     *
+     * @param queue_level Cola de nodos.
+     * @see printlevel(node p_tee)
+     */
+    private void handleLevel(Queue<node> queue_level) {
         try {
             File f = new File("monticulo_out.txt");
             FileWriter fw;
@@ -358,17 +341,34 @@ public class heap_max implements heap_max_i{
             if (f.exists()) {
                 fw = new FileWriter(f, true);
                 bw = new BufferedWriter(fw);
+                int size = queue_level.size();
+                for (int i = 0; i < size; i++) {
+                    node temp = queue_level.poll();
+                    if (temp != null) {
+                        bw.write(temp.getKey_value() + " ");
+                        queue_level.add(temp.getP_left());
+                        queue_level.add(temp.getP_rigth());
+                    }
+                }
                 bw.newLine();
             } else {
                 fw = new FileWriter(f);
                 bw = new BufferedWriter(fw);
+                int size = queue_level.size();
+                for (int i = 0; i < size; i++) {
+                    node temp = queue_level.poll();
+                    if (temp != null) {
+                        bw.write(temp.getKey_value() + " ");
+                        queue_level.add(temp.getP_left());
+                        queue_level.add(temp.getP_rigth());
+                    }
+                }
+                bw.newLine();
             }
             bw.close();
             fw.close();
         } catch (IOException e) {
-            System.out.println(e);
+            System.err.println(e);
         }
     }
-
 }
-

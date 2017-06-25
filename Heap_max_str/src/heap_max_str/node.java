@@ -11,7 +11,9 @@ package heap_max_str;
  */
 public class node {
 
+    //Hijo izquierdo e hijo derecho.
     private node p_left, p_rigth;
+    //LLeva o clasve de cada nodo.
     private int key_value;
 
     /**

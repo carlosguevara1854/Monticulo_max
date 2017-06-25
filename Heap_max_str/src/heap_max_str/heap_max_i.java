@@ -26,20 +26,14 @@ public interface heap_max_i {
     public void erase_heap(int key);
 
     /**
-     * Recorrido en emplitud en un arbol binario. (BFS)
-     *
-     * @param p_tree Nodo raiz del arbol
-     * @return 1: No se realizo el recorrido, 0: Recorrido con normalidad.
-     */
-    public int BFS(node p_tree);
-
-    /**
      * Lectura de del archivo.
      */
     public void reader();
 
     /**
-     * Escritura de el archivo.
+     * Metodo de imprimir arbol por nivel, en archivo (.txt) de salida.
+     *
      */
     public void writer();
+
 }
