@@ -66,7 +66,7 @@ public class heap_max implements heap_max_i {
     }
 
     /**
-     * Método se inserción en montículo binario máximo. Realiza la inserción
+     * Método que inserción en montículo binario máximo. Realiza la inserción
      * recursiva hasta encontrar una posicion vacia (donde debe ser colocado).
      *
      * @see diff_counter(node p_tree)
