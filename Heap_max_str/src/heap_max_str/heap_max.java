@@ -112,7 +112,7 @@ public class heap_max implements heap_max_i {
      */
     @Override
     public void erase_heap(int key) {
-        erase_heap(root, key);
+        erase_heap(root, key, false);//Se asume que no se ha encontrado.
     }
 
     /**
@@ -145,11 +145,11 @@ public class heap_max implements heap_max_i {
      * @param key Llave o clave buscada para eliminar.
      * @since v.1 22/06/2017
      */
-    private void erase_heap(node p_tree, int key) {
+    private void erase_heap(node p_tree, int key, boolean enc) {
         //Se realiza las llamadas del método mientras que el nodo pasado sea
-        //diferente de nulo.
-        //Primero se verifica que el nodo raíz del árbol sea el buscado.
-        if (p_tree != null) {
+        //diferente de nulo y enc sea distinto de true(que no se haya encontrado)
+        if ((p_tree != null) && (enc != true)) {
+            //Primero se verifica que el nodo raíz del árbol sea el buscado.
             if (root.getKey_value() == key) {
                 //Una vez encontrado se se llama al método que modela la nueva rama
                 //omitiendo dicho valor.
@@ -171,8 +171,8 @@ public class heap_max implements heap_max_i {
             //eliminación se llama al método que chequea la propiedad montículo 
             //maximo(heap max).
             check(root, null);
-            erase_heap(p_tree.getP_left(), key);
-            erase_heap(p_tree.getP_rigth(), key);
+            erase_heap(p_tree.getP_left(), key, enc);
+            erase_heap(p_tree.getP_rigth(), key, enc);
         }
     }
 
