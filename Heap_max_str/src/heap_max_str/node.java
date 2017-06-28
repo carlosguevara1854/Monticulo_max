@@ -8,6 +8,7 @@ package heap_max_str;
 /**
  *
  * @author F.R.G
+ * @see https://github.com/carlosguevara1854/Monticulo_max
  */
 public class node {
 
@@ -98,4 +99,3 @@ public class node {
         this.key_value = key_value;
     }
 }
-
