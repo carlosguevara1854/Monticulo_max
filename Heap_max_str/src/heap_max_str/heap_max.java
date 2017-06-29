@@ -63,7 +63,7 @@ public class heap_max implements heap_max_i {
      */
     private int diff_counter(node p_tree) {
         return counter(p_tree.getP_left()) - counter(p_tree.getP_rigth());
-    }
+        }
 
     /**
      * Método que inserción en montículo binario máximo. Realiza la inserción
@@ -81,7 +81,7 @@ public class heap_max implements heap_max_i {
             //Se crea el nodo y se retorna.
             node new_node = new node(key);
             return new_node;
-        }
+    }
         //Si la diferencia nodos es igual a cero(0), hace una llamada del método
         //por la izquierda, si es igual a uno(1) hace una llamada del método por la
         //derecha. De esta manera se van llenando el mismo nivel del árbol en forma
@@ -118,7 +118,11 @@ public class heap_max implements heap_max_i {
     /**
      * Método que retorna el nodo más profundo de la derecha.
      *
-     * Ejemplo: 7 5 6 1 2 3 4 El valor retornado sera : 2 (si p_tree = 7)
+     * Ejemplo: 
+     * 7 
+     * 5 6
+     * 1 2 3 4 
+     * El valor retornado sera : 2 (si p_tree = 7)
      *
      * @see erase_heap(node p_tree)
      * @param p_tree Nodo padre
