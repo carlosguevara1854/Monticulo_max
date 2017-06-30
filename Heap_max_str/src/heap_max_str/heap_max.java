@@ -48,7 +48,7 @@ public class heap_max implements heap_max_i {
         //Se añade la raíz del arbol.
         queue_level.add(root);
         //El ciclo mientras recorre el arbol en amplitud (BFS) con una cola,
-        //buscando la posisión donde debe ser colocado el nodo. 
+        //buscando la posición donde debe ser colocado el nodo. 
         //(de izquierda a derecha en un mismo nivel)
         while (true) {
             node n = queue_level.remove();
