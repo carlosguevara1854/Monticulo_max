@@ -26,82 +26,55 @@ public class heap_max implements heap_max_i {
     //Nodo raiz del montículo binario máximo.
     public node root;
 
-////Métodos de inserción en el montículo.
+////Métodos de inserción en el montículo.  
     /**
      * Método de insercion de un nodo dentro del montículo binario(máximo).
-     * (forma simplificada)
      *
      * @param key Llave o campo clave del nodo que se va a crear.
      * @since v.1 22/06/2017
      */
     @Override
     public void insert_heap_max(int key) {
-        root = insert_heap_max(root, key);
-    }
-
-    /**
-     * Método de conteo de nodos.
-     *
-     * @param p_tree Nodo al cual se le realiza el conteo de nodos.
-     * @return Número de nodos por la izquierda + nodos por la derecha.
-     * @since v.1 22/06/2017
-     */
-    private int counter(node p_tree) {
-        if (p_tree == null) {
-            return 0;
-        } else {
-            return 1 + counter(p_tree.getP_left()) + counter(p_tree.getP_rigth());
-        }
-    }
-
-    /**
-     * Método de contar la diferencia, entre el numero de nodos por la izquierda
-     * y la derecha.
-     *
-     * @param p_tree Nodo al cual se le contabilizara la diferencia.
-     * @return Número de nodos izquierda - número de nodos derecha.
-     */
-    private int diff_counter(node p_tree) {
-        return counter(p_tree.getP_left()) - counter(p_tree.getP_rigth());
-        }
-
-    /**
-     * Método que inserción en montículo binario máximo. Realiza la inserción
-     * recursiva hasta encontrar una posicion vacia (donde debe ser colocado).
-     *
-     * @see diff_counter(node p_tree)
-     * @see check(node p_tree, node prev)
-     * @param p_tree Raiz del arbol.
-     * @param key LLave del nodo que sera creado.
-     * @return Nodo creado.
-     * @since v.1 22/06/2017
-     */
-    private node insert_heap_max(node p_tree, int key) {
-        if (p_tree == null) {
-            //Se crea el nodo y se retorna.
+        //Se verifica si el árbol esta vacio.
+        if (root == null) {
+            //Si es así se crea el nodo y se le asigna a la raíz.
             node new_node = new node(key);
-            return new_node;
-    }
-        //Si la diferencia nodos es igual a cero(0), hace una llamada del método
-        //por la izquierda, si es igual a uno(1) hace una llamada del método por la
-        //derecha. De esta manera se van llenando el mismo nivel del árbol en forma
-        //izquierda y luego derecha. Resultando de esta manera un arbol lleno/semi-lleno.
-        //
-        switch (diff_counter(p_tree)) {
-            case 0:
-                p_tree.setP_left(insert_heap_max(p_tree.getP_left(), key));
-                //Se chequea la propieddad del montículo máximo tras cada llamada
-                //recursiva.
-                check(p_tree, null);
-                break;
-            case 1:
-                p_tree.setP_rigth(insert_heap_max(p_tree.getP_rigth(), key));
-                check(p_tree, null);
-                break;
+            root = new_node;
+            return;
         }
-        return p_tree;
+        //Si es el caso que no este vacio.
+        //Se crea una cola de nodos.
+        Queue<node> queue_level = new LinkedList<>();
+        //Se añade la raíz del arbol.
+        queue_level.add(root);
+        //El ciclo mientras recorre el arbol en amplitud (BFS) con una cola,
+        //buscando la posisión donde debe ser colocado el nodo. 
+        //(de izquierda a derecha en un mismo nivel)
+        while (true) {
+            node n = queue_level.remove();
+            if (n.getP_left() == null) {
+                //Se crea el nuevo nodo, y se le asigna a su hijo izquierdo.
+                node new_node = new node(key);
+                n.setP_left(new_node);
+                //Si se agrega el nodo deja de iterar.
+                break;//Se sale del ciclo mientras.
+            } else {
+                //Se encola su hijo izquiero.
+                queue_level.add(n.getP_left());
+            }
+            if (n.getP_rigth() == null) {
+                node new_node = new node(key);
+                n.setP_rigth(new_node);
+                break;
+            } else {
+                queue_level.add(n.getP_rigth());
+            }
+        }
+        //Luego de la inserción del nodo este puede o no cumplir la propiedad de
+        //montículo maximo, por ello se verifica, todo el árbol tras la insercion.
+        check(root, null);
     }
-
+    
 ////Métodos de eliminación en el montículo.
     /**
      * Método de eliminación de un nodo dentro del montículo binario(máximo).
@@ -120,7 +93,7 @@ public class heap_max implements heap_max_i {
      *
      * Ejemplo: 
      * 7 
-     * 5 6
+     * 5 6 
      * 1 2 3 4 
      * El valor retornado sera : 2 (si p_tree = 7)
      *
