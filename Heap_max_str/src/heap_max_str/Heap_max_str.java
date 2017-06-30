@@ -29,7 +29,7 @@ public class Heap_max_str {
             monticulo_max.writer();
         } else {
             System.err.println("Error. No se han encontrado llaves para agregar.");
-        }
+        }        
         if (monticulo_max.keys_remove != null) {
             for (int i = 0; i < monticulo_max.keys_remove.length; i++) {
                 monticulo_max.erase_heap(monticulo_max.keys_remove[i]);

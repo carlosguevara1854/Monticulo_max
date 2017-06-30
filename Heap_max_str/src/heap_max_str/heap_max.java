@@ -13,13 +13,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  *
  * @author F.R.G
  * @see https://github.com/carlosguevara1854/Monticulo_max
  */
-public class heap_max implements heap_max_i {
+public class heap_max implements heap_max_i{
 
     //Arrays donde se almancenan las llaves a agregar y a eliminar.
     public int[] keys_add, keys_remove;
@@ -28,7 +29,7 @@ public class heap_max implements heap_max_i {
 
 ////Métodos de inserción en el montículo.  
     /**
-     * Método de insercion de un nodo dentro del montículo binario(máximo).
+     * Método de inserción de un nodo dentro del montículo binario máximo.
      *
      * @param key Llave o campo clave del nodo que se va a crear.
      * @since v.1 22/06/2017
@@ -40,14 +41,14 @@ public class heap_max implements heap_max_i {
             //Si es así se crea el nodo y se le asigna a la raíz.
             node new_node = new node(key);
             root = new_node;
-            return;
+            return;//Corta la ejecución tras la asignación.
         }
-        //Si es el caso que no este vacio.
+        //Si es el caso que no este vació.
         //Se crea una cola de nodos.
         Queue<node> queue_level = new LinkedList<>();
-        //Se añade la raíz del arbol.
+        //Se añade la raíz del árbol.
         queue_level.add(root);
-        //El ciclo mientras recorre el arbol en amplitud (BFS) con una cola,
+        //El ciclo mientras recorre el árbol en amplitud (BFS) con una cola,
         //buscando la posición donde debe ser colocado el nodo. 
         //(de izquierda a derecha en un mismo nivel)
         while (true) {
@@ -71,157 +72,157 @@ public class heap_max implements heap_max_i {
             }
         }
         //Luego de la inserción del nodo este puede o no cumplir la propiedad de
-        //montículo maximo, por ello se verifica, todo el árbol tras la insercion.
+        //montículo máximo, por ello se verifica, todo el árbol.
         check(root, null);
     }
-    
+
 ////Métodos de eliminación en el montículo.
     /**
-     * Método de eliminación de un nodo dentro del montículo binario(máximo).
-     * (forma simplificada)
+     * Método que realiza la eliminacion de un nodo hoja. (Nótese que el este
+     * método solo se usa para eliminar los punteros hojas del último nivel del
+     * árbol.)
      *
-     * @param key Llave o campo del nodo que sera eliminado.
-     * @since v.1 22/06/2017
-     */
-    @Override
-    public void erase_heap(int key) {
-        erase_heap(root, key, false);//Se asume que no se ha encontrado.
-    }
-
-    /**
-     * Método que retorna el nodo más profundo de la derecha.
-     *
-     * Ejemplo: 
-     * 7 
-     * 5 6 
-     * 1 2 3 4 
-     * El valor retornado sera : 2 (si p_tree = 7)
-     *
-     * @see erase_heap(node p_tree)
-     * @param p_tree Nodo padre
-     * @return Nodo más profundo de la derecha.
-     * @since v.1 22/06/2017
-     */
-    private node find_max(node p_tree) {
-        if (p_tree == null) {
-            return null;
-        }
-        if (p_tree.getP_rigth() == null) {
-            return p_tree;
-        }
-        return find_max(p_tree.getP_rigth());
-    }
-
-    /**
-     * Método que realiza la pre-busqueda del nodo que sera eliminado. Realiza
-     * la busqueda en forma preorden, posicionandose en el padre del nodo
-     * buscado.(es decir una posición anterior)
-     *
-     * @see erase_heap_max(node p_tree)
-     * @param p_tree Raíz del árbol
-     * @param key Llave o clave buscada para eliminar.
-     * @since v.1 22/06/2017
+     * @param p_tree Raiz del árbol.
+     * @param key Llave a eliminar.
+     * @param enc Indicador si fue encontrado.
      */
     private void erase_heap(node p_tree, int key, boolean enc) {
-        //Se realiza las llamadas del método mientras que el nodo pasado sea
-        //diferente de nulo y enc sea distinto de true(que no se haya encontrado)
+        //Se verifica que el nodo pasado por parámetro sea distinto de nulo, y
+        //que (enc) sea diferente de verdadero, es decir que no se haya encontrado.
         if ((p_tree != null) && (enc != true)) {
             //Primero se verifica que el nodo raíz del árbol sea el buscado.
             if (root.getKey_value() == key) {
-                //Una vez encontrado se se llama al método que modela la nueva rama
-                //omitiendo dicho valor.
-                root = erase_heap(root);
+                //Una vez encontrado le asigna a al nodo nulo.
+                root = null;
             }
             if (p_tree.getP_left() != null) {
                 if (p_tree.getP_left().getKey_value() == key) {
-                    //Una vez encontrado se modifica dicho rama/hoja.
-                    p_tree.setP_left(erase_heap(p_tree.getP_left()));
+                    p_tree.setP_left(null);
+                    enc = true;
                 }
             }
             if (p_tree.getP_rigth() != null) {
                 if (p_tree.getP_rigth().getKey_value() == key) {
-                    p_tree.setP_rigth(erase_heap(p_tree.getP_rigth()));
+                    p_tree.setP_rigth(null);
+                    enc = true;
                 }
             }
-            //Tras la verifición(eliminación) anterior el árbol puede perder la 
-            //propiedad del montículo, por tal razon luego de tal posible 
-            //eliminación se llama al método que chequea la propiedad montículo 
-            //maximo(heap max).
-            check(root, null);
+            //Recorre en búsqueda del nodo primero raíz, izquierda y luego derecha(preorden).
             erase_heap(p_tree.getP_left(), key, enc);
             erase_heap(p_tree.getP_rigth(), key, enc);
         }
     }
 
     /**
-     * Método de eliminación de un nodo.
+     * Método que realiza la eliminación de una llave en el montículo binario.
+     * (realiza la eliminación sustituyendo la clave a eliminar por el último
+     * nodo ingresado *cumpliendo la propiedad de completo/semicompleto*, luego
+     * realiza el chequeo.)
      *
-     * @param p_tree Nodo que contiene la llave buscada para eliminar.
-     * @return Rama nueva creada que sustituirá a dicho nodo.
-     * @see erase_heap(node p_tree, int key)
-     * @since v.1 22/06/2017
+     * @param key LLave que sera eliminada.
+     * @since v.1 22/06/2017 
      */
-    private node erase_heap(node p_tree) {
-        //Si no tiene hijo izquiedo simplemente retorna la rama derecha.
-        //p_right_subtree, p_left_subtree: sub-rama derecha, sub-rama izquierda.
-        //p_deep_node: nodo que el nodo más a la derecha del sub-arbol izquierdo
-        //de (p_tree)(más profundo de la derecha).
-        if (p_tree.getP_left() == null) {
-            node p_right_subtree = p_tree.getP_rigth();
-            return p_right_subtree;
+    @Override
+    public void erase_heap(int key) {
+        if (root != null) {
+            //Se crea una pila, que almacenara los nodos del último nivel.
+            Stack<node> stack = new Stack<>();
+            //Se llena la cola con los nodos del último nivel, pasandole como 
+            //parámetro la altura del árbol.
+            under_level(root, 0, height(root), stack);
+            //Si el nodo a eliminar es igual al tope de la pila de nodos.
+            //Simplemente se manda a eliminar como una hoja.
+            //Nótese que tras la eliminación no se reliza el chequeo del árbol, 
+            //por tratarse de una hoja.
+            if (under_node(stack) == key) {
+                erase_heap(root, under_node(stack), false);//Se asume que no se ha encontrado.
+            } else {
+                //Si no es así, se manda a eliminar(como una hoja) el tope de la pila. 
+                erase_heap(root, under_node(stack), false);
+                //Se sustituye el nodo a eliminar por la llave del tope de la pila.
+                change(key, root, under_node(stack));
+                //Quedando de esta manera un árbol completo/semicompleto. (inserción inversa)
+            }
+        } else {
+            System.err.println("El motículo esta vació. No se puede realizar la eliminación.");
         }
-        if (p_tree.getP_rigth() == null) {
-            node p_left_subtree = p_tree.getP_left();
-            return p_left_subtree;
-        }
-        //En dicho caso que se llegue hasta este punto quiere decir que tanto
-        //tiene hijos tanto derecho como izquierdo.
-        //A (p_deep_node) Se le asigna el nodo más a la derecha del sub-arbol izquierdo.
-        node p_deep_node = find_max(p_tree.getP_left());
-        //Se modela la rama izquierda del nodo más profundo.
-        p_deep_node.setP_left(remove_deep_node(p_tree.getP_left(), p_deep_node));
-        //A el hijo derecho (p_deep_node) se le asigna la rama derecha del nodo que
-        //contiene la llave de eliminacin(p_tree).
-        p_deep_node.setP_rigth(p_tree.getP_rigth());
-        //Retorna la rama creada a partir de el nodo más profundo de la derecha
-        //Notese que dicha rama modelada, no esta cumpliendo la propiedad de montículo
-        //máximo esta propiedad se corrige tras la eliminación en el método de 
-        //prebusqueda erase_heap(node p_tree, int key).
-        return p_deep_node;
     }
 
     /**
-     * Método que modela la nueva rama izquierda del nodo más profundo.
+     * Método que busca la llave a sustutuir y realiza el cambio de llaves.
      *
-     *
-     * Ejemplo: 
-     * p_max_node: 2 
-     * p_tree: 5 
-     * 5       5 
-     * 1 2 --> 1
-     *
-     * @see erase_heap(node p_tree)
-     * @param p_tree Hijo izquierdo del nodo que contiene la clave a eliminar.
-     * @param p_deep_node Valor más a la derecha del subarbol izquierdo.
-     * @return Nueva rama.
+     * @param key LLave que sera sustituida.
+     * @param p_tree Raíz del árbol.
+     * @param new_key Nueva llave a sustituir.
      * @since v.1 22/06/2017
      */
-    private node remove_deep_node(node p_tree, node p_deep_node) {
-        if (p_tree == null) {
-            return null;
+    private void change(int key, node p_tree, int new_key) {
+        if (p_tree != null) {
+            if (p_tree.getKey_value() == key) {
+                p_tree.setKey_value(new_key);
+            }
+            //Cuando hace el cambio de claves puede que inhabilite la propiedad
+            //de montículo(padres mayores). Por tal razón se hace un chequeo del
+            //arbol tras cada llamada.
+            check(p_tree, null);
+            //Se realiza primero raíz, izquierda luego derecha. (preorden)
+            change(key, p_tree.getP_left(), new_key);
+            change(key, p_tree.getP_rigth(), new_key);
         }
-        //Generalmente para cuando (p_tree) es igual a (p_deep_node) y retorna su
-        //hijo izquierdo.
-        if (p_tree == p_deep_node) {
-            return p_deep_node.getP_left();
-        }
-        //Se conserva (p_deep_node) y se van visitando los hijos derechos de
-        //(p_tree) hasta llegar (p_deep_node). 
-        p_tree.setP_rigth(remove_deep_node(p_tree.getP_rigth(), p_deep_node));
-        return p_tree;
     }
 
+    /**
+     * Método que recibe como parametro una pila y devuelve la llave del nodo
+     * del tope.
+     *
+     * @param stack Pila de nodos.
+     * @return LLave del tope de la pila.
+     * @since v.1 22/06/2017
+     */
+    private int under_node(Stack<node> stack) {
+        return stack.peek().getKey_value();
+    }
+
+    /**
+     * Método que apila los nodos del último nivel.
+     *
+     * @param p_tree Nodo ráiz.
+     * @param level Nivel actual(la raíz del árbol es nivel cero(0)).
+     * @param height Altura del árbol.
+     * @param stack Pila de nodos.
+     * @since v.1 22/06/2017
+     */
+    private void under_level(node p_tree, int level, int height, Stack<node> stack) {
+        if (p_tree != null) {
+            //Se aumenta 1 al nivel, y se recorre primero izquierda, raiz y luego
+            //derecha. (inorden)
+            under_level(p_tree.getP_left(), level + 1, height, stack);
+            //Si el nivel actual es igual a la altura del árbol, apila el nodo
+            //es decir apila los nodos del ultimo nivel.
+            if (level == height) {
+                stack.add(p_tree);
+            }
+            under_level(p_tree.getP_rigth(), level + 1, height, stack);
+        }
+    }
+
+    /**
+     * Método que devuelve la altura del arbol. (nodo raiz = altura 0)
+     *
+     * @param p_tree
+     * @return Altura del árbol binario.
+     * @since v.1 22/06/2017
+     */
+    private int height(node p_tree) {
+        if (p_tree == null) {
+            return -1;
+        } else {
+            //Máximo entre ambas alturas.
+            return (Math.max(height(p_tree.getP_left()), height(p_tree.getP_rigth())) + 1);
+        }
+    }
 ////Métodos de verificación de propiedad de montículo.
+
     /**
      * Método que chequea la propiedad de un montículo binario máximo. Visitando
      * primero el hijo izquierdo, el hijo derecho y luego la raíz.(posorden)
@@ -250,8 +251,8 @@ public class heap_max implements heap_max_i {
      * Método que intercambia las llaves entre nodos.
      *
      * @see check(node p_tree, node prev)
-     * @param p_tree Nodo al cual se le asignara la llave de prev.
-     * @param prev Nodo al cual se le asignara la llave de p_tree.
+     * @param p_tree Nodo al cual se le asignará la llave de prev.
+     * @param prev Nodo al cual se le asignará la llave de p_tree.
      * @since v.1 22/06/2017
      */
     private void swap(node p_tree, node prev) {
@@ -371,7 +372,7 @@ public class heap_max implements heap_max_i {
                 //keys_2: Llaves que se eliminarán.
                 String linea;
                 String[] keys_1, keys_2;
-                //La variable (i), para saber en que posisión del registro se 
+                //La variable (i), para saber en que posisión del archivo se 
                 //encuentra.
                 int i = 0;
                 while (((linea = br.readLine()) != null) && (i < 2)) {
